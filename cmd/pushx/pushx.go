@@ -47,6 +47,10 @@ func LoadEnv(prefix string) error {
 		i := os.Getenv(prefix + "INPUT_FILE")
 		flags.InputFile = &i
 	}
+	if os.Getenv(prefix+"OUTPUT") != "" {
+		o := os.Getenv(prefix + "OUTPUT")
+		flags.Output = &o
+	}
 	return nil
 }
 
@@ -103,6 +107,7 @@ func main() {
 		DriverName: drivers.DriverName(*flags.Driver),
 		InputStr:   *flags.InputStr,
 		InputFile:  *flags.InputFile,
+		OutputFile: *flags.Output,
 	}
 	if err := j.Init(EnvKeyPrefix); err != nil {
 		l.WithError(err).Error("InitDriver")

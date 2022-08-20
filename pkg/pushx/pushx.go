@@ -15,6 +15,8 @@ type PushX struct {
 	InputStr   string             `json:"in"`
 	InputFile  string             `json:"inFile"`
 	Input      io.Reader          `json:"-"`
+	OutputFile string             `json:"outFile"`
+	Output     io.Writer          `json:"-"`
 }
 
 func (j *PushX) Init(envKeyPrefix string) error {
@@ -63,12 +65,46 @@ func (j *PushX) Init(envKeyPrefix string) error {
 	return nil
 }
 
+func (j *PushX) output() error {
+	l := log.WithFields(log.Fields{
+		"fn":     "output",
+		"driver": j.DriverName,
+	})
+	l.Debug("output")
+	if j.OutputFile == "-" {
+		l.Debug("output is stdout")
+		j.Output = os.Stdout
+	} else if j.OutputFile != "" {
+		l.Debug("output is file")
+		var err error
+		j.Output, err = os.Create(j.OutputFile)
+		if err != nil {
+			log.WithError(err).Error("Create")
+			return err
+		}
+	} else {
+		l.Debug("no output")
+	}
+	return nil
+}
+
 func (j *PushX) Push() error {
 	l := log.WithFields(log.Fields{
 		"fn":     "Push",
 		"driver": j.DriverName,
 	})
-	err := j.Driver.Push(j.Input)
+	var in io.Reader
+	if j.OutputFile == "" {
+		l.Debug("no output")
+		in = j.Input
+	} else {
+		if err := j.output(); err != nil {
+			l.WithError(err).Error("output")
+			return err
+		}
+		in = io.TeeReader(j.Input, j.Output)
+	}
+	err := j.Driver.Push(in)
 	if err != nil {
 		l.Error("push error:", err)
 		return err

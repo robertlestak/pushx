@@ -23,6 +23,14 @@ echo -n hello world | pushx
 
 By default, pushx will read input data from stdin. If `-in-file` is provided, pushx will read input data from the specified file, and if `-in` is provided, pushx will read input data from the specified command line argument.
 
+### Pipelining
+
+By default, pushx will consume the input data, send it to the configured data provider, and exit with a 0 status code on success and a non-zero exit code on failure to send to the data provider. However if you would like to include `pushx` in a larger shell pipeline, you can use `-out=-` (or `-out=filename.txt`) to pipe the input to the output to pass on to the next command. This also allows you to send the same data to multiple data providers.
+
+```bash
+echo -n hello world | pushx -driver redis-list -out=- | pushx -driver gcp-pubsub -out=- | pushx -driver gcp-bq
+```
+
 #### Relational Driver JSON Parsing
 
 For drivers which are non-structured (ex. `fs`, `aws-s3`, `redis-list`, etc.), pushx will send the input data as-is to the driver. However for drivers which enforce some relational schema such as SQL-based drivers, you will need to provide an input query which will be executed to insert the input data. You can provide a `{{pushx_payload}}` placeholder in your query / parameters which will be replaced with the entire input data. For example:
@@ -170,12 +178,12 @@ Usage: pushx [options]
     	Cassandra hosts
   -cassandra-keyspace string
     	Cassandra keyspace
+  -cassandra-params string
+    	Cassandra query params
   -cassandra-password string
     	Cassandra password
   -cassandra-query string
     	Cassandra query
-  -cassandra-params string
-    	Cassandra query params
   -cassandra-user string
     	Cassandra user
   -centauri-channel string
@@ -304,14 +312,14 @@ Usage: pushx [options]
     	MySQL database
   -mysql-host string
     	MySQL host
+  -mysql-params string
+    	MySQL query params
   -mysql-password string
     	MySQL password
   -mysql-port string
     	MySQL port (default "3306")
   -mysql-query string
     	MySQL query
-  -mysql-params string
-    	MySQL query params
   -mysql-user string
     	MySQL user
   -nats-creds-file string
@@ -364,18 +372,20 @@ Usage: pushx [options]
     	NSQ TLS skip verify
   -nsq-topic string
     	NSQ topic
+  -out string
+    	output file to use in addition to the driver. If '-' then stdout is used.
   -psql-database string
     	PostgreSQL database
   -psql-host string
     	PostgreSQL host
+  -psql-params string
+    	PostgreSQL query params
   -psql-password string
     	PostgreSQL password
   -psql-port string
     	PostgreSQL port (default "5432")
   -psql-query string
     	PostgreSQL query
-  -psql-params string
-    	PostgreSQL query params
   -psql-ssl-mode string
     	PostgreSQL SSL mode (default "disable")
   -psql-user string
@@ -552,6 +562,7 @@ Usage: pushx [options]
 - `PUSHX_NSQ_TLS_INSECURE`
 - `PUSHX_NSQ_TLS_KEY_FILE`
 - `PUSHX_NSQ_TOPIC`
+- `PUSHX_OUTPUT`
 - `PUSHX_PSQL_DATABASE`
 - `PUSHX_PSQL_HOST`
 - `PUSHX_PSQL_PASSWORD`
