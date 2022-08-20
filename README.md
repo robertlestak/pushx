@@ -1,6 +1,6 @@
 # pushx - cloud agnostic data push
 
-pushx is an abstraction binary for pushing data to various data persistence layers.
+pushx is a cloud agnostic abstraction binary for pushing data to various persistence layers.
 
 pushx is a single compiled binary that can be packaged in your existing job code container, configured with environment variables or command line flags, and included in any existing data pipelines and workflows.
 
