@@ -12,7 +12,6 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/robertlestak/pushx/pkg/flags"
 	"github.com/robertlestak/pushx/pkg/schema"
-	"github.com/tidwall/gjson"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -126,22 +125,6 @@ func (d *Postgres) Init() error {
 	return nil
 }
 
-func extractMustacheKey(s string) string {
-	l := log.WithFields(log.Fields{
-		"pkg": "bq",
-		"fn":  "extractMustacheKey",
-	})
-	l.Debug("Extracting mustache key")
-	var key string
-	for _, k := range strings.Split(s, "{{") {
-		if strings.Contains(k, "}}") {
-			key = strings.Split(k, "}}")[0]
-			break
-		}
-	}
-	return key
-}
-
 func (d *Postgres) Push(r io.Reader) error {
 	l := log.WithFields(log.Fields{
 		"pkg": "postgres",
@@ -157,16 +140,7 @@ func (d *Postgres) Push(r io.Reader) error {
 		l.Error(err)
 		return err
 	}
-	// loop through params and if we find {{key}}, replace it with the key
-	for i, v := range d.Query.Params {
-		sv := fmt.Sprintf("%s", v)
-		if sv == "{{pushx_payload}}" {
-			d.Query.Params[i] = bd
-		} else if strings.Contains(sv, "{{") {
-			key := extractMustacheKey(sv)
-			d.Query.Params[i] = gjson.GetBytes(bd, key).String()
-		}
-	}
+	d.Query.Params = schema.ReplaceParams(bd, d.Query.Params)
 	l.Debugf("Executing query: %s %v", d.Query.Query, d.Query.Params)
 	_, err = d.Client.Exec(d.Query.Query, d.Query.Params...)
 	if err != nil {

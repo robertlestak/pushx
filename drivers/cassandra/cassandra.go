@@ -1,7 +1,6 @@
 package cassandra
 
 import (
-	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
@@ -12,7 +11,6 @@ import (
 	"github.com/robertlestak/pushx/pkg/flags"
 	"github.com/robertlestak/pushx/pkg/schema"
 	log "github.com/sirupsen/logrus"
-	"github.com/tidwall/gjson"
 )
 
 type Cassandra struct {
@@ -121,22 +119,6 @@ func (d *Cassandra) Init() error {
 	return nil
 }
 
-func extractMustacheKey(s string) string {
-	l := log.WithFields(log.Fields{
-		"pkg": "bq",
-		"fn":  "extractMustacheKey",
-	})
-	l.Debug("Extracting mustache key")
-	var key string
-	for _, k := range strings.Split(s, "{{") {
-		if strings.Contains(k, "}}") {
-			key = strings.Split(k, "}}")[0]
-			break
-		}
-	}
-	return key
-}
-
 func (d *Cassandra) Push(r io.Reader) error {
 	l := log.WithFields(log.Fields{
 		"pkg": "cassandra",
@@ -152,15 +134,7 @@ func (d *Cassandra) Push(r io.Reader) error {
 		l.Error(err)
 		return err
 	}
-	for i, v := range d.Query.Params {
-		sv := fmt.Sprintf("%s", v)
-		if sv == "{{pushx_payload}}" {
-			d.Query.Params[i] = bd
-		} else if strings.Contains(sv, "{{") {
-			key := extractMustacheKey(sv)
-			d.Query.Params[i] = gjson.GetBytes(bd, key).String()
-		}
-	}
+	d.Query.Params = schema.ReplaceParams(bd, d.Query.Params)
 	l.Debugf("Executing query: %s %v", d.Query.Query, d.Query.Params)
 	err = d.Client.Query(d.Query.Query, d.Query.Params...).Exec()
 	if err != nil {

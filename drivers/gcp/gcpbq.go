@@ -5,11 +5,10 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
-	"strings"
 
 	"cloud.google.com/go/bigquery"
 	"github.com/robertlestak/pushx/pkg/flags"
-	"github.com/tidwall/gjson"
+	"github.com/robertlestak/pushx/pkg/schema"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -67,45 +66,6 @@ func (d *BQ) Init() error {
 	return nil
 }
 
-func extractMustacheKeys(s string) []string {
-	l := log.WithFields(log.Fields{
-		"pkg": "bq",
-		"fn":  "extractMustacheKeys",
-	})
-	l.Debug("Extracting mustache keys")
-	keys := []string{}
-	for _, k := range strings.Split(s, "{{") {
-		if strings.Contains(k, "}}") {
-			keys = append(keys, strings.Split(k, "}}")[0])
-		}
-	}
-	return keys
-}
-
-func replaceJSONKey(query string, k string, v string) []byte {
-	l := log.WithFields(log.Fields{
-		"pkg": "bq",
-		"fn":  "replaceJSONKey",
-	})
-	l.Debug("Replacing JSON key")
-	return []byte(strings.ReplaceAll(query, "{{"+k+"}}", v))
-}
-
-func (d *BQ) jsonQuery(bd []byte) string {
-	l := log.WithFields(log.Fields{
-		"pkg": "bq",
-		"fn":  "jsonQuery",
-	})
-	l.Debug("Parsing JSON query")
-	keys := extractMustacheKeys(*d.Query)
-	l.Debug("Found mustache keys:", keys)
-	for _, k := range keys {
-		jv := gjson.GetBytes(bd, k)
-		bd = replaceJSONKey(*d.Query, k, jv.String())
-	}
-	return string(bd)
-}
-
 func (d *BQ) Push(r io.Reader) error {
 	l := log.WithFields(log.Fields{
 		"pkg": "bq",
@@ -121,9 +81,7 @@ func (d *BQ) Push(r io.Reader) error {
 		return err
 	}
 	if *d.Query != "" {
-		s := strings.ReplaceAll(*d.Query, "{{pushx_payload}}", string(bd))
-		d.Query = &s
-		q := d.jsonQuery(bd)
+		q := schema.ReplaceParamsString(bd, *d.Query)
 		d.Query = &q
 		l.Debug("Query: " + *d.Query)
 	}
