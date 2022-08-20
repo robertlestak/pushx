@@ -23,6 +23,35 @@ echo -n hello world | pushx
 
 By default, pushx will read input data from stdin. If `-in-file` is provided, pushx will read input data from the specified file, and if `-in` is provided, pushx will read input data from the specified command line argument.
 
+#### Relational Driver JSON Parsing
+
+For drivers which are non-structured (ex. `fs`, `aws-s3`, `redis-list`, etc.), pushx will send the input data as-is to the driver. However for drivers which enforce some relational schema such as SQL-based drivers, you will need to provide an input query which will be executed to insert the input data. You can provide a `{{pushx_payload}}` placeholder in your query / parameters which will be replaced with the entire input data. For example:
+
+```bash
+echo 'the data' | pushx -driver postgres \
+    ...
+    -psql-query "INSERT INTO table (data) VALUES ($1)"
+    -psql-params "{{pushx_payload}}"
+```
+
+However if your input data is a JSON object, you may want to convert this to a relational format when inserting into your column-oriented database. You can use `{{mustache}}` syntax to extract specific fields from the input data and insert them into your query. For example:
+
+```bash
+echo '{"id": 1, "name": "John"}' | pushx -driver postgres \
+    ...
+    -psql-query "INSERT INTO table (id, name) VALUES ($1, $2)"
+    -psql-params "{{id}},{{name}}"
+```
+
+This also supports deeply nested fields, using `gjson` syntax.
+
+```bash
+echo '{"id": 1, "name": "John", "address": {"street": "123 Main St", "city": "Anytown"}}' | pushx -driver postgres \
+    ...
+    -psql-query "INSERT INTO table (id, name, street, city) VALUES ($1, $2, $3, $4)"
+    -psql-params "{{id}},{{name}},{{address.street}},{{address.city}}"
+```
+
 ## Drivers
 
 Currently, the following drivers are supported:
