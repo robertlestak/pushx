@@ -144,16 +144,6 @@ Usage: pushx [options]
     	Enable TLS insecure
   -activemq-tls-key-file string
     	TLS key
-  -aws-dynamo-clear-query string
-    	AWS DynamoDB clear query
-  -aws-dynamo-data-path string
-    	AWS DynamoDB data JSON path
-  -aws-dynamo-fail-query string
-    	AWS DynamoDB fail query
-  -aws-dynamo-key-path string
-    	AWS DynamoDB query key JSON path
-  -aws-dynamo-retrieve-query string
-    	AWS DynamoDB retrieve query
   -aws-dynamo-table string
     	AWS DynamoDB table name
   -aws-load-config
