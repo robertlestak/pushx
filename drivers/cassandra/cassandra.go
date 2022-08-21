@@ -44,8 +44,11 @@ func (d *Cassandra) LoadEnv(prefix string) error {
 	if os.Getenv(prefix+"CASSANDRA_CONSISTENCY") != "" {
 		d.Consistency = os.Getenv(prefix + "CASSANDRA_CONSISTENCY")
 	}
+	if d.Query == nil {
+		d.Query = &schema.SqlQuery{}
+	}
 	if os.Getenv(prefix+"CASSANDRA_QUERY") != "" {
-		d.Query = &schema.SqlQuery{Query: os.Getenv(prefix + "CASSANDRA_QUERY")}
+		d.Query.Query = os.Getenv(prefix + "CASSANDRA_QUERY")
 	}
 	if os.Getenv(prefix+"CASSANDRA_PARAMS") != "" {
 		for _, s := range strings.Split(os.Getenv(prefix+"CASSANDRA_PARAMS"), ",") {
@@ -78,16 +81,19 @@ func (d *Cassandra) LoadFlags() error {
 			rps = append(rps, v)
 		}
 	}
+	d.Hosts = hosts
 	d.User = *flags.CassandraUser
 	d.Password = *flags.CassandraPassword
 	d.Keyspace = *flags.CassandraKeyspace
 	d.Consistency = *flags.CassandraConsistency
+	if d.Query == nil {
+		d.Query = &schema.SqlQuery{}
+	}
 	if *flags.CassandraQuery != "" {
-		rq := &schema.SqlQuery{
-			Query:  *flags.CassandraQuery,
-			Params: rps,
-		}
-		d.Query = rq
+		d.Query.Query = *flags.CassandraQuery
+	}
+	if len(rps) > 0 {
+		d.Query.Params = rps
 	}
 	return nil
 }

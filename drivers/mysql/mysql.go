@@ -50,10 +50,11 @@ func (d *Mysql) LoadEnv(prefix string) error {
 	if os.Getenv(prefix+"MYSQL_DATABASE") != "" {
 		d.Db = os.Getenv(prefix + "MYSQL_DATABASE")
 	}
+	if d.Query == nil {
+		d.Query = &schema.SqlQuery{}
+	}
 	if os.Getenv(prefix+"MYSQL_QUERY") != "" {
-		d.Query = &schema.SqlQuery{
-			Query: os.Getenv(prefix + "MYSQL_QUERY"),
-		}
+		d.Query.Query = os.Getenv(prefix + "MYSQL_QUERY")
 	}
 	if os.Getenv(prefix+"MYSQL_QUERY_PARAMS") != "" {
 		p := strings.Split(os.Getenv(prefix+"MYSQL_QUERY_PARAMS"), ",")
@@ -86,12 +87,14 @@ func (d *Mysql) LoadFlags() error {
 	d.User = *flags.MysqlUser
 	d.Pass = *flags.MysqlPassword
 	d.Db = *flags.MysqlDatabase
+	if d.Query == nil {
+		d.Query = &schema.SqlQuery{}
+	}
 	if *flags.MysqlQuery != "" {
-		rq := &schema.SqlQuery{
-			Query:  *flags.MysqlQuery,
-			Params: rps,
-		}
-		d.Query = rq
+		d.Query.Query = *flags.MysqlQuery
+	}
+	if len(rps) > 0 {
+		d.Query.Params = rps
 	}
 	return nil
 }

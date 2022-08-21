@@ -55,10 +55,11 @@ func (d *Postgres) LoadEnv(prefix string) error {
 	if os.Getenv(prefix+"PSQL_SSL_MODE") != "" {
 		d.SslMode = os.Getenv(prefix + "PSQL_SSL_MODE")
 	}
+	if d.Query == nil {
+		d.Query = &schema.SqlQuery{}
+	}
 	if os.Getenv(prefix+"PSQL_QUERY") != "" {
-		d.Query = &schema.SqlQuery{
-			Query: os.Getenv(prefix + "PSQL_QUERY"),
-		}
+		d.Query.Query = os.Getenv(prefix + "PSQL_QUERY")
 	}
 	if os.Getenv(prefix+"PSQL_QUERY_PARAMS") != "" {
 		p := strings.Split(os.Getenv(prefix+"PSQL_QUERY_PARAMS"), ",")
@@ -92,12 +93,14 @@ func (d *Postgres) LoadFlags() error {
 	d.Pass = *flags.PsqlPassword
 	d.Db = *flags.PsqlDatabase
 	d.SslMode = *flags.PsqlSSLMode
+	if d.Query == nil {
+		d.Query = &schema.SqlQuery{}
+	}
 	if *flags.PsqlQuery != "" {
-		rq := &schema.SqlQuery{
-			Query:  *flags.PsqlQuery,
-			Params: rps,
-		}
-		d.Query = rq
+		d.Query.Query = *flags.PsqlQuery
+	}
+	if len(rps) > 0 {
+		d.Query.Params = rps
 	}
 	return nil
 }

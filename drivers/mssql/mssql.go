@@ -50,10 +50,11 @@ func (d *MSSql) LoadEnv(prefix string) error {
 	if os.Getenv(prefix+"MSSQL_DATABASE") != "" {
 		d.Db = os.Getenv(prefix + "MSSQL_DATABASE")
 	}
+	if d.Query == nil {
+		d.Query = &schema.SqlQuery{}
+	}
 	if os.Getenv(prefix+"MSSQL_QUERY") != "" {
-		d.Query = &schema.SqlQuery{
-			Query: os.Getenv(prefix + "MSSQL_QUERY"),
-		}
+		d.Query.Query = os.Getenv(prefix + "MSSQL_QUERY")
 	}
 	if os.Getenv(prefix+"MSSQL_QUERY_PARAMS") != "" {
 		p := strings.Split(os.Getenv(prefix+"MSSQL_QUERY_PARAMS"), ",")
@@ -86,12 +87,14 @@ func (d *MSSql) LoadFlags() error {
 	d.User = *flags.MSSqlUser
 	d.Pass = *flags.MSSqlPassword
 	d.Db = *flags.MSSqlDatabase
+	if d.Query == nil {
+		d.Query = &schema.SqlQuery{}
+	}
 	if *flags.MSSqlQuery != "" {
-		rq := &schema.SqlQuery{
-			Query:  *flags.MSSqlQuery,
-			Params: rps,
-		}
-		d.Query = rq
+		d.Query.Query = *flags.MSSqlQuery
+	}
+	if len(rps) > 0 {
+		d.Query.Params = rps
 	}
 	return nil
 }
