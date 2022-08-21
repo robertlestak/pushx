@@ -48,7 +48,7 @@ func ReplaceParams(bd []byte, params []any) []any {
 	for i, v := range params {
 		sv := fmt.Sprintf("%s", v)
 		if sv == "{{pushx_payload}}" {
-			params[i] = bd
+			params[i] = string(bd)
 		} else if strings.Contains(sv, "{{") {
 			key := ExtractMustacheKey(sv)
 			params[i] = gjson.GetBytes(bd, key).String()

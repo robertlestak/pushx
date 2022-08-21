@@ -14,6 +14,7 @@ import (
 	"github.com/robertlestak/pushx/drivers/kafka"
 	"github.com/robertlestak/pushx/drivers/local"
 	"github.com/robertlestak/pushx/drivers/mongodb"
+	"github.com/robertlestak/pushx/drivers/mssql"
 	"github.com/robertlestak/pushx/drivers/mysql"
 	"github.com/robertlestak/pushx/drivers/nats"
 	"github.com/robertlestak/pushx/drivers/nfs"
@@ -42,6 +43,7 @@ var (
 	GCPGCS            DriverName = "gcp-gcs"
 	GCPPubSub         DriverName = "gcp-pubsub"
 	MongoDB           DriverName = "mongodb"
+	MSSql             DriverName = "mssql"
 	MySQL             DriverName = "mysql"
 	Nats              DriverName = "nats"
 	NSQ               DriverName = "nsq"
@@ -89,6 +91,8 @@ func GetDriver(name DriverName) Driver {
 		return &kafka.Kafka{}
 	case MongoDB:
 		return &mongodb.Mongo{}
+	case MSSql:
+		return &mssql.MSSql{}
 	case MySQL:
 		return &mysql.Mysql{}
 	case Nats:

@@ -9,6 +9,7 @@ require (
 	cloud.google.com/go/storage v1.22.1
 	github.com/apache/pulsar-client-go v0.8.1
 	github.com/aws/aws-sdk-go v1.44.61
+	github.com/denisenkom/go-mssqldb v0.12.2
 	github.com/elastic/go-elasticsearch/v8 v8.3.0
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/go-sql-driver/mysql v1.6.0
@@ -25,7 +26,6 @@ require (
 	github.com/tidwall/gjson v1.14.1
 	github.com/vmware/go-nfs-client v0.0.0-20190605212624-d43b92724c1b
 	go.mongodb.org/mongo-driver v1.10.0
-	google.golang.org/api v0.85.0
 )
 
 require (
@@ -48,6 +48,8 @@ require (
 	github.com/godbus/dbus v0.0.0-20190726142602-4481cbc300e2 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
+	github.com/golang-sql/civil v0.0.0-20190719163853-cb61b32ac6fe // indirect
+	github.com/golang-sql/sqlexp v0.1.0 // indirect
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
@@ -109,6 +111,7 @@ require (
 	golang.org/x/term v0.0.0-20220722155259-a9ba230a4035 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/xerrors v0.0.0-20220609144429-65e65417b02f // indirect
+	google.golang.org/api v0.85.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20220617124728-180714bec0ad // indirect
 	google.golang.org/grpc v1.47.0 // indirect

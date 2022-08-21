@@ -81,6 +81,7 @@ Currently, the following drivers are supported:
 - [PostgreSQL](#postgresql) (`postgres`)
 - [Pulsar](#pulsar) (`pulsar`)
 - [MongoDB](#mongodb) (`mongodb`)
+- [MSSQL](#mssql) (`mssql`)
 - [MySQL](#mysql) (`mysql`)
 - [NATS](#nats) (`nats`)
 - [NFS](#nfs) (`nfs`)
@@ -129,6 +130,7 @@ While building for a specific driver may seem contrary to the ethos of pushx, th
 ## Usage
 
 ```bash
+time="2022-08-21T12:29:21-07:00" level=debug msg=start app=pushx fn=main
 Usage: pushx [options]
   -activemq-address string
     	ActiveMQ STOMP address
@@ -189,7 +191,7 @@ Usage: pushx [options]
   -centauri-public-key-base64 string
     	Centauri public key base64
   -driver string
-    	driver to use. (activemq, aws-dynamo, aws-s3, aws-sqs, cassandra, centauri, elasticsearch, fs, gcp-bq, gcp-firestore, gcp-gcs, gcp-pubsub, http, kafka, local, mongodb, mysql, nats, nfs, nsq, postgres, pulsar, rabbitmq, redis-list, redis-pubsub, redis-stream)
+    	driver to use. (activemq, aws-dynamo, aws-s3, aws-sqs, cassandra, centauri, elasticsearch, fs, gcp-bq, gcp-firestore, gcp-gcs, gcp-pubsub, http, kafka, local, mongodb, mssql, mysql, nats, nfs, nsq, postgres, pulsar, rabbitmq, redis-list, redis-pubsub, redis-stream)
   -elasticsearch-address string
     	Elasticsearch address
   -elasticsearch-doc-id string
@@ -298,6 +300,20 @@ Usage: pushx [options]
     	Mongo TLS key file
   -mongo-user string
     	MongoDB user
+  -mssql-database string
+    	MySQL database
+  -mssql-host string
+    	MySQL host
+  -mssql-params string
+    	MySQL query params
+  -mssql-password string
+    	MySQL password
+  -mssql-port string
+    	MySQL port (default "1433")
+  -mssql-query string
+    	MySQL query
+  -mssql-user string
+    	MySQL user
   -mysql-database string
     	MySQL database
   -mysql-host string
@@ -520,6 +536,13 @@ Usage: pushx [options]
 - `PUSHX_MONGO_TLS_INSECURE`
 - `PUSHX_MONGO_TLS_KEY_FILE`
 - `PUSHX_MONGO_USER`
+- `PUSHX_MSSQL_DATABASE`
+- `PUSHX_MSSQL_HOST`
+- `PUSHX_MSSQL_PASSWORD`
+- `PUSHX_MSSQL_PORT`
+- `PUSHX_MSSQL_QUERY`
+- `PUSHX_MSSQL_QUERY_PARAMS`
+- `PUSHX_MSSQL_USER`
 - `PUSHX_MYSQL_DATABASE`
 - `PUSHX_MYSQL_HOST`
 - `PUSHX_MYSQL_PASSWORD`
@@ -789,6 +812,22 @@ echo '{"id": 1, "name": "hello", "another": "value"}' | pushx \
     -mongo-user my-user \
     -mongo-password my-password \
     -driver mongodb
+```
+
+### MSSQL
+
+The MSSQL driver will insert the specified document into Microsoft SQL Server. If the input data is a JSON document, value keys can be substituted using mustache-style syntax.
+
+```bash
+echo '{"id": 1, "name": "hello", "another": "value"}' | pushx \
+    -mssql-host localhost \
+    -mssql-port 1433 \
+    -mssql-database mydb \
+    -mssql-user sa \
+    -mssql-password 'mypassword!' \
+    -mssql-query "INSERT INTO example (id, name, another) VALUES (?, ?, ?)" \
+    -mssql-params "{{id}},{{name}},{{another}}" \
+    -driver mssql
 ```
 
 ### MySQL
