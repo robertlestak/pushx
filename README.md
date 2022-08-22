@@ -76,6 +76,7 @@ Currently, the following drivers are supported:
 - [GCP Cloud Storage](#gcp-gcs) (`gcp-gcs`)
 - [GCP Firestore](#gcp-firestore) (`gcp-firestore`)
 - [GCP Pub/Sub](#gcp-pubsub) (`gcp-pubsub`)
+- [GitHub](#github) (`github`)
 - [HTTP](#http) (`http`)
 - [Kafka](#kafka) (`kafka`)
 - [PostgreSQL](#postgresql) (`postgres`)
@@ -130,7 +131,6 @@ While building for a specific driver may seem contrary to the ethos of pushx, th
 ## Usage
 
 ```bash
-time="2022-08-21T12:29:21-07:00" level=debug msg=start app=pushx fn=main
 Usage: pushx [options]
   -activemq-address string
     	ActiveMQ STOMP address
@@ -191,7 +191,7 @@ Usage: pushx [options]
   -centauri-public-key-base64 string
     	Centauri public key base64
   -driver string
-    	driver to use. (activemq, aws-dynamo, aws-s3, aws-sqs, cassandra, centauri, elasticsearch, fs, gcp-bq, gcp-firestore, gcp-gcs, gcp-pubsub, http, kafka, local, mongodb, mssql, mysql, nats, nfs, nsq, postgres, pulsar, rabbitmq, redis-list, redis-pubsub, redis-stream)
+    	driver to use. (activemq, aws-dynamo, aws-s3, aws-sqs, cassandra, centauri, elasticsearch, fs, gcp-bq, gcp-firestore, gcp-gcs, gcp-pubsub, github, http, kafka, local, mongodb, mssql, mysql, nats, nfs, nsq, postgres, pulsar, rabbitmq, redis-list, redis-pubsub, redis-stream)
   -elasticsearch-address string
     	Elasticsearch address
   -elasticsearch-doc-id string
@@ -230,6 +230,32 @@ Usage: pushx [options]
     	GCP project ID
   -gcp-pubsub-topic string
     	GCP Pub/Sub topic name
+  -github-base-branch string
+    	base branch for PR
+  -github-branch string
+    	branch for PR.
+  -github-commit-email string
+    	commit email
+  -github-commit-message string
+    	commit message
+  -github-commit-name string
+    	commit name
+  -github-file string
+    	GitHub file
+  -github-open-pr
+    	open PR on changes. Default: false
+  -github-owner string
+    	GitHub owner
+  -github-pr-body string
+    	PR body
+  -github-pr-title string
+    	PR title
+  -github-ref string
+    	GitHub ref
+  -github-repo string
+    	GitHub repo
+  -github-token string
+    	GitHub token
   -http-content-type string
     	HTTP content type
   -http-enable-tls
@@ -502,6 +528,19 @@ Usage: pushx [options]
 - `PUSHX_GCP_GCS_KEY`
 - `PUSHX_GCP_PROJECT_ID`
 - `PUSHX_GCP_TOPIC`
+- `PUSHX_GITHUB_BASE_BRANCH`
+- `PUSHX_GITHUB_BRANCH`
+- `PUSHX_GITHUB_COMMIT_EMAIL`
+- `PUSHX_GITHUB_COMMIT_MESSAGE`
+- `PUSHX_GITHUB_COMMIT_NAME`
+- `PUSHX_GITHUB_FILE`
+- `PUSHX_GITHUB_OPEN_PR`
+- `PUSHX_GITHUB_OWNER`
+- `PUSHX_GITHUB_PR_BODY`
+- `PUSHX_GITHUB_PR_TITLE`
+- `PUSHX_GITHUB_REF`
+- `PUSHX_GITHUB_REPO`
+- `PUSHX_GITHUB_TOKEN`
 - `PUSHX_HTTP_ENABLE_TLS`
 - `PUSHX_HTTP_REQUEST_CONTENT_TYPE`
 - `PUSHX_HTTP_REQUEST_HEADERS`
@@ -767,6 +806,22 @@ echo hello | pushx \
     -gcp-project-id my-project \
     -gcp-pubsub-topic my-topic \
     -driver gcp-pubsub
+```
+
+### GitHub
+
+The GitHub driver will insert the specified object `-github-file` into the provided GitHub repository `-github-repo`.  This can be done either on the same branch (`-github-ref` or `-github-base-branch`), or a new branch (`-github-branch`). If on a new branch, a pull request can be opened with `-github-open-pr`. If opening a new PR without a branch specified, a new branch name will be generated.
+
+```bash
+echo hello | pushx \
+    -github-repo my-repo \
+    -github-owner my-owner \
+    -github-file path/to/my-file.txt \
+    -github-token "$(</path/to/token.txt)" \
+    -github-base-branch main \
+    -github-branch my-branch \
+    -github-open-pr \
+    -driver github
 ```
 
 ### HTTP

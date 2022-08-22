@@ -1,4 +1,4 @@
-VERSION=v0.0.5
+VERSION=v0.0.6
 
 .PHONY: pushx
 pushx: clean bin/pushx_darwin bin/pushx_windows bin/pushx_linux
