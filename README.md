@@ -70,6 +70,7 @@ Currently, the following drivers are supported:
 - [AWS SQS](#aws-sqs) (`aws-sqs`)
 - [Cassandra](#cassandra) (`cassandra`)
 - [Centauri](#centauri) (`centauri`)
+- [Cockroach](#cockroach) (`cockroach`)
 - [Elasticsearch](#elasticsearch) (`elasticsearch`)
 - [FS](#fs) (`fs`)
 - [GCP Big Query](#gcp-bq) (`gcp-bq`)
@@ -190,8 +191,32 @@ Usage: pushx [options]
     	Centauri public key
   -centauri-public-key-base64 string
     	Centauri public key base64
+  -cockroach-database string
+    	CockroachDB database
+  -cockroach-host string
+    	CockroachDB host
+  -cockroach-params string
+    	CockroachDB query params
+  -cockroach-password string
+    	CockroachDB password
+  -cockroach-port string
+    	CockroachDB port (default "26257")
+  -cockroach-query string
+    	CockroachDB query
+  -cockroach-routing-id string
+    	CockroachDB routing id
+  -cockroach-ssl-mode string
+    	CockroachDB SSL mode (default "disable")
+  -cockroach-tls-cert string
+    	CockroachDB TLS cert
+  -cockroach-tls-key string
+    	CockroachDB TLS key
+  -cockroach-tls-root-cert string
+    	CockroachDB TLS root cert
+  -cockroach-user string
+    	CockroachDB user
   -driver string
-    	driver to use. (activemq, aws-dynamo, aws-s3, aws-sqs, cassandra, centauri, elasticsearch, fs, gcp-bq, gcp-firestore, gcp-gcs, gcp-pubsub, github, http, kafka, local, mongodb, mssql, mysql, nats, nfs, nsq, postgres, pulsar, rabbitmq, redis-list, redis-pubsub, redis-stream)
+    	driver to use. (activemq, aws-dynamo, aws-s3, aws-sqs, cassandra, centauri, cockroach, elasticsearch, fs, gcp-bq, gcp-firestore, gcp-gcs, gcp-pubsub, github, http, kafka, local, mongodb, mssql, mysql, nats, nfs, nsq, postgres, pulsar, rabbitmq, redis-list, redis-pubsub, redis-stream)
   -elasticsearch-address string
     	Elasticsearch address
   -elasticsearch-doc-id string
@@ -420,6 +445,12 @@ Usage: pushx [options]
     	PostgreSQL query
   -psql-ssl-mode string
     	PostgreSQL SSL mode (default "disable")
+  -psql-tls-cert string
+    	PostgreSQL TLS cert
+  -psql-tls-key string
+    	PostgreSQL TLS key
+  -psql-tls-root-cert string
+    	PostgreSQL TLS root cert
   -psql-user string
     	PostgreSQL user
   -pulsar-address string
@@ -508,6 +539,18 @@ Usage: pushx [options]
 - `PUSHX_CENTAURI_PEER_URL`
 - `PUSHX_CENTAURI_PUBLIC_KEY`
 - `PUSHX_CENTAURI_PUBLIC_KEY_BASE64`
+- `PUSHX_COCKROACH_DATABASE`
+- `PUSHX_COCKROACH_HOST`
+- `PUSHX_COCKROACH_PASSWORD`
+- `PUSHX_COCKROACH_PORT`
+- `PUSHX_COCKROACH_QUERY`
+- `PUSHX_COCKROACH_QUERY_PARAMS`
+- `PUSHX_COCKROACH_ROUTING_ID`
+- `PUSHX_COCKROACH_SSL_MODE`
+- `PUSHX_COCKROACH_TLS_CERT`
+- `PUSHX_COCKROACH_TLS_KEY`
+- `PUSHX_COCKROACH_TLS_ROOT_CERT`
+- `PUSHX_COCKROACH_USER`
 - `PUSHX_DRIVER`
 - `PUSHX_ELASTICSEARCH_ADDRESS`
 - `PUSHX_ELASTICSEARCH_DOC_ID`
@@ -622,6 +665,9 @@ Usage: pushx [options]
 - `PUSHX_PSQL_QUERY`
 - `PUSHX_PSQL_QUERY_PARAMS`
 - `PUSHX_PSQL_SSL_MODE`
+- `PUSHX_PSQL_TLS_CERT`
+- `PUSHX_PSQL_TLS_KEY`
+- `PUSHX_PSQL_TLS_ROOT_CERT`
 - `PUSHX_PSQL_USER`
 - `PUSHX_PULSAR_ADDRESS`
 - `PUSHX_PULSAR_AUTH_CERT_FILE`
@@ -730,6 +776,22 @@ echo hello | pushx \
     -centauri-public-key "$(</path/to/public.pem)" \
     -centauri-peer-url https://api.test-peer1.centauri.sh \
     -driver centauri
+```
+
+### Cockroach
+
+The Cockroach driver will insert the specified document into CockroachDB. If the input data is a JSON document, value keys can be substituted using mustache-style syntax.
+
+```bash
+echo '{"id": 1, "name": "hello", "another": "value"}' | pushx \
+    -cockroach-host localhost \
+    -cockroach-port 26257 \
+    -cockroach-database mydb \
+    -cockroach-user myuser \
+    -cockroach-password mypassword \
+    -cockroach-query 'INSERT INTO example (id, name, another) VALUES ($1, $2, $3)' \
+    -cockroach-params "{{id}},{{name}},{{another}}" \
+    -cockroach mysql
 ```
 
 ### Elasticsearch
