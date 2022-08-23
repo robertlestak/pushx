@@ -93,6 +93,7 @@ Currently, the following drivers are supported:
 - [Redis List](#redis-list) (`redis-list`)
 - [Redis Pub/Sub](#redis-pubsub) (`redis-pubsub`)
 - [Redis Stream](#redis-stream) (`redis-stream`)
+- [SMB](#smb) (`smb`)
 - [Local](#local) (`local`)
 
 Plans to add more drivers in the future, and PRs are welcome.
@@ -1132,6 +1133,21 @@ echo '{"id": 1, "name": "hello", "another": "value"}' | pushx \
     -redis-port 6379 \
     -redis-key my-stream \
     -driver redis-stream
+```
+
+### SMB
+
+The SMB driver will connect to the specified SMB server and push the input data to the specified file.
+
+```bash
+echo hello | pushx \
+    -smb-host localhost \
+    -smb-port 445 \
+    -smb-user myuser \
+    -smb-pass mypassword \
+    -smb-share my-share \
+    -smb-key /path/to/file \
+    -driver smb
 ```
 
 ### Local

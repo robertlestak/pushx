@@ -18,6 +18,7 @@ require (
 	github.com/gocql/gocql v1.2.0
 	github.com/google/go-github/v35 v35.3.0
 	github.com/google/uuid v1.3.0
+	github.com/hirochachacha/go-smb2 v1.1.0
 	github.com/lib/pq v1.10.6
 	github.com/nats-io/nats.go v1.16.0
 	github.com/nsqio/go-nsq v1.1.0
@@ -49,6 +50,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dvsekhvalnov/jose2go v1.5.0 // indirect
 	github.com/elastic/elastic-transport-go/v8 v8.0.0-20211216131617-bbee439d559c // indirect
+	github.com/geoffgarside/ber v1.1.0 // indirect
 	github.com/godbus/dbus v0.0.0-20190726142602-4481cbc300e2 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect

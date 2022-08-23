@@ -26,6 +26,7 @@ import (
 	"github.com/robertlestak/pushx/drivers/pulsar"
 	"github.com/robertlestak/pushx/drivers/rabbitmq"
 	"github.com/robertlestak/pushx/drivers/redis"
+	"github.com/robertlestak/pushx/drivers/smb"
 )
 
 type DriverName string
@@ -60,6 +61,7 @@ var (
 	RedisList         DriverName = "redis-list"
 	RedisSubscription DriverName = "redis-pubsub"
 	RedisStream       DriverName = "redis-stream"
+	SMB               DriverName = "smb"
 	Local             DriverName = "local"
 	ErrDriverNotFound            = errors.New("driver not found")
 )
@@ -125,6 +127,8 @@ func GetDriver(name DriverName) Driver {
 		return &redis.RedisPubSub{}
 	case RedisStream:
 		return &redis.RedisStream{}
+	case SMB:
+		return &smb.SMB{}
 	case Local:
 		return &local.Local{}
 	}
