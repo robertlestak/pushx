@@ -9,6 +9,7 @@ require (
 	cloud.google.com/go/storage v1.22.1
 	github.com/apache/pulsar-client-go v0.8.1
 	github.com/aws/aws-sdk-go v1.44.61
+	github.com/couchbase/gocb/v2 v2.5.2
 	github.com/denisenkom/go-mssqldb v0.12.2
 	github.com/elastic/go-elasticsearch/v8 v8.3.0
 	github.com/go-redis/redis v6.15.9+incompatible
@@ -43,6 +44,7 @@ require (
 	github.com/armon/go-metrics v0.0.0-20190430140413-ec5e00d3c878 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.1.1 // indirect
+	github.com/couchbase/gocbcore/v10 v10.1.4 // indirect
 	github.com/danieljoos/wincred v1.1.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dvsekhvalnov/jose2go v1.5.0 // indirect

@@ -8,6 +8,7 @@ import (
 	"github.com/robertlestak/pushx/drivers/cassandra"
 	"github.com/robertlestak/pushx/drivers/centauri"
 	"github.com/robertlestak/pushx/drivers/cockroach"
+	"github.com/robertlestak/pushx/drivers/couchbase"
 	"github.com/robertlestak/pushx/drivers/elasticsearch"
 	"github.com/robertlestak/pushx/drivers/fs"
 	"github.com/robertlestak/pushx/drivers/gcp"
@@ -37,6 +38,7 @@ var (
 	CassandraDB       DriverName = "cassandra"
 	Centauri          DriverName = "centauri"
 	CockroachDB       DriverName = "cockroach"
+	Couchbase         DriverName = "couchbase"
 	Elasticsearch     DriverName = "elasticsearch"
 	FS                DriverName = "fs"
 	HTTP              DriverName = "http"
@@ -79,6 +81,8 @@ func GetDriver(name DriverName) Driver {
 		return &centauri.Centauri{}
 	case CockroachDB:
 		return &cockroach.CockroachDB{}
+	case Couchbase:
+		return &couchbase.Couchbase{}
 	case Elasticsearch:
 		return &elasticsearch.Elasticsearch{}
 	case FS:

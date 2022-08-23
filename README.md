@@ -71,6 +71,7 @@ Currently, the following drivers are supported:
 - [Cassandra](#cassandra) (`cassandra`)
 - [Centauri](#centauri) (`centauri`)
 - [Cockroach](#cockroach) (`cockroach`)
+- [Couchbase](#couchbase) (`couchbase`)
 - [Elasticsearch](#elasticsearch) (`elasticsearch`)
 - [FS](#fs) (`fs`)
 - [GCP Big Query](#gcp-bq) (`gcp-bq`)
@@ -215,8 +216,32 @@ Usage: pushx [options]
     	CockroachDB TLS root cert
   -cockroach-user string
     	CockroachDB user
+  -couchbase-address string
+    	Couchbase address
+  -couchbase-bucket string
+    	Couchbase bucket name
+  -couchbase-collection string
+    	Couchbase collection (default "_default")
+  -couchbase-enable-tls
+    	Enable TLS
+  -couchbase-id string
+    	Couchbase id
+  -couchbase-password string
+    	Couchbase password
+  -couchbase-scope string
+    	Couchbase scope (default "_default")
+  -couchbase-tls-ca-file string
+    	Couchbase TLS CA file
+  -couchbase-tls-cert-file string
+    	Couchbase TLS cert file
+  -couchbase-tls-insecure
+    	Enable TLS insecure
+  -couchbase-tls-key-file string
+    	Couchbase TLS key file
+  -couchbase-user string
+    	Couchbase user
   -driver string
-    	driver to use. (activemq, aws-dynamo, aws-s3, aws-sqs, cassandra, centauri, cockroach, elasticsearch, fs, gcp-bq, gcp-firestore, gcp-gcs, gcp-pubsub, github, http, kafka, local, mongodb, mssql, mysql, nats, nfs, nsq, postgres, pulsar, rabbitmq, redis-list, redis-pubsub, redis-stream)
+    	driver to use. (activemq, aws-dynamo, aws-s3, aws-sqs, cassandra, centauri, cockroach, couchbase, elasticsearch, fs, gcp-bq, gcp-firestore, gcp-gcs, gcp-pubsub, github, http, kafka, local, mongodb, mssql, mysql, nats, nfs, nsq, postgres, pulsar, rabbitmq, redis-list, redis-pubsub, redis-stream)
   -elasticsearch-address string
     	Elasticsearch address
   -elasticsearch-doc-id string
@@ -551,6 +576,17 @@ Usage: pushx [options]
 - `PUSHX_COCKROACH_TLS_KEY`
 - `PUSHX_COCKROACH_TLS_ROOT_CERT`
 - `PUSHX_COCKROACH_USER`
+- `PUSHX_COUCHBASE_BUCKET_NAME`
+- `PUSHX_COUCHBASE_COLLECTION`
+- `PUSHX_COUCHBASE_ENABLE_TLS`
+- `PUSHX_COUCHBASE_ID`
+- `PUSHX_COUCHBASE_PASSWORD`
+- `PUSHX_COUCHBASE_SCOPE`
+- `PUSHX_COUCHBASE_TLS_CA_FILE`
+- `PUSHX_COUCHBASE_TLS_CERT_FILE`
+- `PUSHX_COUCHBASE_TLS_INSECURE`
+- `PUSHX_COUCHBASE_TLS_KEY_FILE`
+- `PUSHX_COUCHBASE_USER`
 - `PUSHX_DRIVER`
 - `PUSHX_ELASTICSEARCH_ADDRESS`
 - `PUSHX_ELASTICSEARCH_DOC_ID`
@@ -792,6 +828,22 @@ echo '{"id": 1, "name": "hello", "another": "value"}' | pushx \
     -cockroach-query 'INSERT INTO example (id, name, another) VALUES ($1, $2, $3)' \
     -cockroach-params "{{id}},{{name}},{{another}}" \
     -cockroach mysql
+```
+
+### Couchbase
+
+The Couchbase driver will insert the specified document into the Couchbase bucket. Mustache syntax can be used to extract a value from the document to set as the document ID.
+
+```bash
+echo '{"hello": "world"}' | pushx \
+    -couchbase-bucket my-bucket \
+    -couchbase-user my-user \
+    -couchbase-password my-password \
+    -couchbase-scope my-scope \
+    -couchbase-collection my-collection \
+    -couchbase-address 'couchbase://localhost' \
+    -couchbase-id '{{hello}}' \
+    -driver couchbase
 ```
 
 ### Elasticsearch
