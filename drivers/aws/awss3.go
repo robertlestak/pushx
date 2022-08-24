@@ -129,9 +129,13 @@ func (d *S3) Init() error {
 		Region: aws.String(d.Region),
 	}
 	sess, err := session.NewSession(cfg)
+	if err != nil {
+		l.Errorf("%+v", err)
+		return err
+	}
 	reqId := uuid.New().String()
 	if d.RoleARN != "" {
-		l.Debug("CreateAWSSession roleArn=%s requestId=%s", d.RoleARN, reqId)
+		l.Debugf("CreateAWSSession roleArn=%s requestId=%s", d.RoleARN, reqId)
 		creds := stscreds.NewCredentials(sess, d.RoleARN, func(p *stscreds.AssumeRoleProvider) {
 			p.RoleSessionName = "pushx-" + reqId
 		})

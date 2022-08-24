@@ -105,6 +105,10 @@ func (d *SQS) Init() error {
 		Region: aws.String(d.Region),
 	}
 	sess, err := session.NewSession(cfg)
+	if err != nil {
+		l.Errorf("%+v", err)
+		return err
+	}
 	reqId := uuid.New().String()
 	if d.RoleARN != "" {
 		l.Debug("CreateAWSSession roleArn=%s requestId=%s", d.RoleARN, reqId)
