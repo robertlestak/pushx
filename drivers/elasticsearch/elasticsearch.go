@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 
@@ -138,8 +139,13 @@ func (d *Elasticsearch) Push(r io.Reader) error {
 		l.Errorf("error putting work: %v", err)
 		return err
 	}
-	if putResponse.StatusCode != 200 {
-		l.Errorf("error putting work: %v", putResponse.Body)
+	if putResponse.StatusCode != 200 && putResponse.StatusCode != 201 {
+		bd, err := ioutil.ReadAll(putResponse.Body)
+		if err != nil {
+			l.Errorf("error reading response body: %v", err)
+			return err
+		}
+		l.Errorf("error putting work(%d): %v", putResponse.StatusCode, string(bd))
 		return errors.New("error putting work")
 	}
 	return nil
