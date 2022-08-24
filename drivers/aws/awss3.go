@@ -11,6 +11,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials/stscreds"
 	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/aws/aws-sdk-go/service/sts"
 	"github.com/google/uuid"
@@ -140,7 +141,7 @@ func (d *S3) Init() error {
 			p.RoleSessionName = "pushx-" + reqId
 		})
 		cfg.Credentials = creds
-		sess.Config = cfg
+		// add cfg to session
 	}
 	if err != nil {
 		l.Errorf("%+v", err)
@@ -150,7 +151,8 @@ func (d *S3) Init() error {
 		return err
 
 	}
-	d.Client = s3manager.NewUploader(sess)
+	s3Svc := s3.New(sess, cfg)
+	d.Client = s3manager.NewUploaderWithClient(s3Svc)
 	d.sts = &STSSession{
 		Session: sess,
 		Config:  cfg,
