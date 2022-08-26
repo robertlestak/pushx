@@ -93,6 +93,7 @@ Currently, the following drivers are supported:
 - [Redis List](#redis-list) (`redis-list`)
 - [Redis Pub/Sub](#redis-pubsub) (`redis-pubsub`)
 - [Redis Stream](#redis-stream) (`redis-stream`)
+- [Scylla](#scylla) (`scylla`)
 - [SMB](#smb) (`smb`)
 - [Local](#local) (`local`)
 
@@ -242,7 +243,7 @@ Usage: pushx [options]
   -couchbase-user string
     	Couchbase user
   -driver string
-    	driver to use. (activemq, aws-dynamo, aws-s3, aws-sqs, cassandra, centauri, cockroach, couchbase, elasticsearch, fs, gcp-bq, gcp-firestore, gcp-gcs, gcp-pubsub, github, http, kafka, local, mongodb, mssql, mysql, nats, nfs, nsq, postgres, pulsar, rabbitmq, redis-list, redis-pubsub, redis-stream)
+    	driver to use. (activemq, aws-dynamo, aws-s3, aws-sqs, cassandra, centauri, cockroach, couchbase, elasticsearch, fs, gcp-bq, gcp-firestore, gcp-gcs, gcp-pubsub, github, http, kafka, local, mongodb, mssql, mysql, nats, nfs, nsq, postgres, pulsar, rabbitmq, redis-list, redis-pubsub, redis-stream, smb)
   -elasticsearch-address string
     	Elasticsearch address
   -elasticsearch-doc-id string
@@ -527,6 +528,34 @@ Usage: pushx [options]
     	Redis TLS key file
   -redis-tls-skip-verify
     	Redis TLS skip verify
+  -scylla-consistency string
+    	Scylla consistency (default "QUORUM")
+  -scylla-hosts string
+    	Scylla hosts
+  -scylla-keyspace string
+    	Scylla keyspace
+  -scylla-local-dc string
+    	Scylla local dc
+  -scylla-params string
+    	Scylla query params
+  -scylla-password string
+    	Scylla password
+  -scylla-query string
+    	Scylla query
+  -scylla-user string
+    	Scylla user
+  -smb-host string
+    	SMB host
+  -smb-key string
+    	SMB key
+  -smb-pass string
+    	SMB pass
+  -smb-port int
+    	SMB port (default 445)
+  -smb-share string
+    	SMB share
+  -smb-user string
+    	SMB user
 ```
 
 ### Environment Variables
@@ -729,6 +758,20 @@ Usage: pushx [options]
 - `PUSHX_REDIS_TLS_CERT_FILE`
 - `PUSHX_REDIS_TLS_INSECURE`
 - `PUSHX_REDIS_TLS_KEY_FILE`
+- `PUSHX_SCYLLA_CONSISTENCY`
+- `PUSHX_SCYLLA_HOSTS`
+- `PUSHX_SCYLLA_KEYSPACE`
+- `PUSHX_SCYLLA_LOCAL_DC`
+- `PUSHX_SCYLLA_PARAMS`
+- `PUSHX_SCYLLA_PASSWORD`
+- `PUSHX_SCYLLA_QUERY`
+- `PUSHX_SCYLLA_USER`
+- `PUSHX_SMB_HOST`
+- `PUSHX_SMB_KEY`
+- `PUSHX_SMB_PASS`
+- `PUSHX_SMB_PORT`
+- `PUSHX_SMB_SHARE`
+- `PUSHX_SMB_USER`
 
 ## Driver Examples
 
@@ -1134,6 +1177,21 @@ echo '{"id": 1, "name": "hello", "another": "value"}' | pushx \
     -redis-key my-stream \
     -driver redis-stream
 ```
+
+### Scylla
+
+The Scylla driver will submit the data to the specified keyspace table. If the `-scylla-query` contains a `{{pushx_payload}}` placeholder, the entire input data will be substituted for the placeholder. However if the input data is a JSON document, value keys can be substituted using mustache-style syntax.
+
+```bash
+echo '{"hello": "world", "another": {"nested": "value"}}' | pushx \
+    -scylla-keyspace mykeyspace \
+    -scylla-consistency QUORUM \
+    -scylla-hosts "localhost:9042,another:9042" \
+    -scylla-query 'INSERT INTO mykeyspace.mytable (hello, another) VALUES (?, ?)' \
+    -scylla-params '{{hello}}, {{another.nested}}' \
+    -driver scylla
+```
+
 
 ### SMB
 

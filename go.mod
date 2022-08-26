@@ -15,7 +15,7 @@ require (
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/go-stomp/stomp/v3 v3.0.5
-	github.com/gocql/gocql v1.2.0
+	github.com/gocql/gocql v0.0.0-00010101000000-000000000000
 	github.com/google/go-github/v35 v35.3.0
 	github.com/google/uuid v1.3.0
 	github.com/hirochachacha/go-smb2 v1.1.0
@@ -31,6 +31,8 @@ require (
 	go.mongodb.org/mongo-driver v1.10.0
 	golang.org/x/oauth2 v0.0.0-20220622183110-fd043fe589d2
 )
+
+replace github.com/gocql/gocql => github.com/scylladb/gocql v1.7.1
 
 require (
 	cloud.google.com/go v0.102.1 // indirect
