@@ -73,6 +73,7 @@ Currently, the following drivers are supported:
 - [Cockroach](#cockroach) (`cockroach`)
 - [Couchbase](#couchbase) (`couchbase`)
 - [Elasticsearch](#elasticsearch) (`elasticsearch`)
+- [Etcd](#etcd) (`etcd`)
 - [FS](#fs) (`fs`)
 - [GCP Big Query](#gcp-bq) (`gcp-bq`)
 - [GCP Cloud Storage](#gcp-gcs) (`gcp-gcs`)
@@ -243,7 +244,7 @@ Usage: pushx [options]
   -couchbase-user string
     	Couchbase user
   -driver string
-    	driver to use. (activemq, aws-dynamo, aws-s3, aws-sqs, cassandra, centauri, cockroach, couchbase, elasticsearch, fs, gcp-bq, gcp-firestore, gcp-gcs, gcp-pubsub, github, http, kafka, local, mongodb, mssql, mysql, nats, nfs, nsq, postgres, pulsar, rabbitmq, redis-list, redis-pubsub, redis-stream, smb)
+    	driver to use. (activemq, aws-dynamo, aws-s3, aws-sqs, cassandra, centauri, cockroach, couchbase, elasticsearch, etcd, fs, gcp-bq, gcp-firestore, gcp-gcs, gcp-pubsub, github, http, kafka, local, mongodb, mssql, mysql, nats, nfs, nsq, postgres, pulsar, rabbitmq, redis-list, redis-pubsub, redis-stream, scylla, smb)
   -elasticsearch-address string
     	Elasticsearch address
   -elasticsearch-doc-id string
@@ -264,6 +265,26 @@ Usage: pushx [options]
     	Elasticsearch TLS skip verify
   -elasticsearch-username string
     	Elasticsearch username
+  -etcd-hosts string
+    	Etcd hosts
+  -etcd-key string
+    	Etcd key
+  -etcd-limit int
+    	Etcd limit. 0 for no limit
+  -etcd-password string
+    	Etcd password
+  -etcd-tls-ca string
+    	Etcd TLS ca
+  -etcd-tls-cert string
+    	Etcd TLS cert
+  -etcd-tls-enable
+    	Etcd TLS enable
+  -etcd-tls-insecure
+    	Etcd TLS insecure
+  -etcd-tls-key string
+    	Etcd TLS key
+  -etcd-username string
+    	Etcd username
   -fs-folder string
     	FS folder
   -fs-key string
@@ -628,6 +649,15 @@ Usage: pushx [options]
 - `PUSHX_ELASTICSEARCH_TLS_KEY_FILE`
 - `PUSHX_ELASTICSEARCH_TLS_SKIP_VERIFY`
 - `PUSHX_ELASTICSEARCH_USERNAME`
+- `PUSHX_ETCD_HOSTS`
+- `PUSHX_ETCD_KEY`
+- `PUSHX_ETCD_PASSWORD`
+- `PUSHX_ETCD_TLS_CA`
+- `PUSHX_ETCD_TLS_CERT`
+- `PUSHX_ETCD_TLS_ENABLE`
+- `PUSHX_ETCD_TLS_INSECURE`
+- `PUSHX_ETCD_TLS_KEY`
+- `PUSHX_ETCD_USERNAME`
 - `PUSHX_FS_FOLDER`
 - `PUSHX_FS_KEY`
 - `PUSHX_GCP_BQ_QUERY`
@@ -902,6 +932,19 @@ echo '{"hello": "world"}' | pushx \
     -elasticsearch-tls-skip-verify \
     -elasticsearch-index my-index \
     -driver elasticsearch
+```
+
+### Etcd
+
+The Etcd driver will insert the specified document into Etcd.
+
+```bash
+echo '{"hello": "world"}' | pushx \
+    -etcd-hosts localhost:2379,another:2379 \
+    -etcd-username my-user \
+    -etcd-password my-password \
+    -etcd-key /my/key \
+    -driver etcd
 ```
 
 ### FS
